@@ -1,90 +1,66 @@
 document.addEventListener('DOMContentLoaded', function() {
     const scene = document.getElementById('scene-container');
     const shards = document.querySelectorAll('.shard');
-    let movementTimer; // Таймер для отслеживания остановки мыши
 
-    /**
-     * Функция для запуска "дыхания" (состояние покоя).
-     * Она устанавливает базовое Z-положение как CSS-переменную
-     * и добавляет класс .is-breathing для запуска CSS-анимации.
-     */
     function startBreathing() {
         shards.forEach(shard => {
             const depth = parseFloat(shard.getAttribute('data-depth')) || 0;
-            // Базовый transform (только Z) нужен, чтобы анимация не сбрасывала 3D-положение
             const baseTransform = `translateZ(${depth * 40}px)`;
             
             shard.style.setProperty('--base-transform', baseTransform);
-            
-            // Убираем инлайновый transform, чтобы CSS-анимация могла его переопределить
-            shard.style.transform = ''; 
-            
-            // Добавляем класс, который запускает CSS-анимацию
             shard.classList.add('is-breathing');
         });
     }
 
     /**
-     * Функция для остановки "дыхания" (во время движения мыши).
-     * Она снимает класс .is-breathing.
+     * ОБНОВЛЕНО: Функция для создания частиц с двойной анимацией.
      */
-    function stopBreathing() {
-        shards.forEach(shard => {
-            shard.classList.remove('is-breathing');
-            // Сбрасываем CSS-переменную (не обязательно, но для чистоты)
-            shard.style.setProperty('--base-transform', 'none'); 
-        });
-    }
+    function createFlickeringParticles() {
+        const container = document.getElementById('flickering-particles-container');
+        if (!container) return;
 
-    // Listener 'mousemove' теперь делает больше:
-    scene.addEventListener('mousemove', (e) => {
-        
-        // 1. Немедленно останавливаем "дыхание"
-        stopBreathing();
-
-        // 2. Сбрасываем таймер "остановки" (если он был)
-        clearTimeout(movementTimer);
-
-        // 3. Выполняем вашу оригинальную логику параллакса
+        const particleCount = 150; 
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
-        
-        const mouseX = e.clientX - centerX;
-        const mouseY = e.clientY - centerY;
 
-        shards.forEach(shard => {
-            const depth = parseFloat(shard.getAttribute('data-depth')) || 0;
-            const moveX = mouseX * depth * 0.1;
-            const moveY = mouseY * depth * 0.1;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'flickering-particle';
 
-            // (Эти переменные все еще нужны для эффекта ::before)
-            shard.style.setProperty('--x', moveX);
-            shard.style.setProperty('--y', moveY);
+            const size = Math.random() * 2 + 0.5;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
 
-            // Применяем полный transform для параллакса
-            // (Он переопределит любую CSS-анимацию)
-            shard.style.transform = `
-                translateX(${moveX}px) 
-                translateY(${moveY}px) 
-                translateZ(${depth * 40}px)
-                rotateY(${moveX * 0.1}deg)
-                rotateX(${-moveY * 0.1}deg)
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            particle.style.left = `${x}px`;
+            particle.style.top = `${y}px`;
+
+            // --- НОВЫЙ БЛОК: Расчет и установка вектора движения ---
+            // 1. Рассчитываем, на сколько нужно сместить частицу, чтобы она попала в центр.
+            const targetX = centerX - x;
+            const targetY = centerY - y;
+
+            // 2. Устанавливаем эти значения как CSS-переменные для этой конкретной частицы.
+            particle.style.setProperty('--target-x', `${targetX}px`);
+            particle.style.setProperty('--target-y', `${targetY}px`);
+            // --- КОНЕЦ НОВОГО БЛОКА ---
+
+            // --- ОБНОВЛЕНО: Назначаем обе анимации с разными параметрами ---
+            const flickerDuration = Math.random() * 3 + 2; // от 2 до 5 секунд
+            const pullDuration = Math.random() * 10 + 10; // от 10 до 20 секунд для плавности
+            const delay = Math.random() * 10; // общая задержка для асинхронности
+
+            particle.style.animation = `
+                flicker ${flickerDuration}s ${delay}s infinite linear,
+                centerPull ${pullDuration}s ${delay}s infinite ease-in-out
             `;
-        });
+            // --- КОНЕЦ ОБНОВЛЕНИЯ ---
 
-        // 4. Запускаем новый таймер. Если мышь не двигалась 200мс,
-        //    мы считаем, что пользователь остановился, и запускаем "дыхание"
-        movementTimer = setTimeout(() => {
-            startBreathing();
-        }, 200);
-    });
+            container.appendChild(particle);
+        }
+    }
 
-    // Запускаем breathing по умолчанию (когда страница загружена и мышь не движется)
     startBreathing();
-
-    // Если указатель покидает сцену, сразу включаем breathing
-    scene.addEventListener('mouseleave', () => {
-        clearTimeout(movementTimer);
-        startBreathing();
-    });
+    createFlickeringParticles();
 });
