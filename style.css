@@ -31,18 +31,28 @@ body, html {
         inset 0 0 25px rgba(10, 12, 30, 0.7),
         0 20px 50px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(180, 190, 220, 0.3);
-    transition: border-color 0.4s, box-shadow 0.4s;
+    
+    /* ДОБАВЛЕНО: Свечение по контуру осколка */
+    filter: drop-shadow(0 0 8px rgba(170, 200, 255, 0.5));
+
+    /* ДОБАВЛЕНО: Плавный переход для нового фильтра */
+    transition: border-color 0.4s, box-shadow 0.4s, filter 0.4s;
 }
 
 .shard::before {
     content: ''; position: absolute; top: 0; left: 0;
     width: 100%; height: 100%;
-    background-size: cover, cover; background-position: center, center;
+    background-size: cover, cover, cover; /* ОБНОВЛЕНО: 3 слоя */
+    background-position: center, center, center;
     background-blend-mode: screen; 
     z-index: -1;
     opacity: 0.6; transition: opacity 0.4s;
     clip-path: inherit; 
-    background-image: radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%);
+    
+    /* ОБНОВЛЕНО: Добавлен базовый слой с виньеткой */
+    background-image: 
+        radial-gradient(circle at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.75) 100%), /* Слой 1: Виньетка */
+        radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); /* Слой 2: Цветное свечение */
 }
 
 .shard:hover {
@@ -51,6 +61,11 @@ body, html {
         inset 0 0 1px 1px var(--highlight-color),
         inset 0 0 15px rgba(10, 12, 30, 0.5),
         0 25px 60px rgba(0, 0, 0, 0.4);
+
+    /* ДОБАВЛЕНО: Усиленное свечение при наведении */
+    filter: 
+        drop-shadow(0 0 16px rgba(200, 225, 255, 0.9)) 
+        drop-shadow(0 0 4px rgba(255, 255, 255, 1));
 }
 .shard:hover::before { opacity: 1; }
 
@@ -69,13 +84,16 @@ body, html {
 .particle { position: absolute; background: white; border-radius: 50%; box-shadow: 0 0 6px rgba(255, 255, 255, 0.8); animation: drift infinite alternate ease-in-out; }
 @keyframes drift { from { transform: translateY(-15px); } to { transform: translateY(15px); opacity: 0.2; } }
 
-#shard-1::before { background-image: url('https://static0.gamerantimages.com/wordpress/wp-content/uploads/henry-cavill-superman-batman-v-superman-dawn-of-justice.jpg?w=1200&h=628&fit=crop'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
-#shard-2::before { background-image: url('https://upload.wikimedia.org/wikipedia/ru/a/a2/Batman_Jim_Lee.jpg'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
-#shard-3::before { background-image: url('https://i.redd.it/male-model-francisco-lachowski-on-top-of-being-handsome-asf-v0-rrxuw64ie29c1.jpg?width=471&format=pjpg&auto=webp&s=ad5940bc9724af5d963f08259aeda606dcc6cf2b'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
-#shard-4::before { background-image: url('https://bookingagentinfo.com/wp-content/uploads/2206/Jordan-Barrett-1.png'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
-#shard-5::before { background-image: url('https://f4.bcbits.com/img/0016828305_10.jpg'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
-#shard-6::before { background-image: url('https://www.atj.com/wp-content/uploads/2024/07/Destination-Highlights-Korea1-Highlights-Seoul.jpg'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
+/* --- ОБНОВЛЕНО: КО ВСЕМ ИЗОБРАЖЕНИЯМ ДОБАВЛЕН СЛОЙ ВИНЬЕТКИ --- */
+/* Теперь у каждого 3 слоя: Виньетка, Картинка, Цветное свечение */
+#shard-1::before { background-image: radial-gradient(circle at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.75) 100%), url('https://static0.gamerantimages.com/wordpress/wp-content/uploads/henry-cavill-superman-batman-v-superman-dawn-of-justice.jpg?w=1200&h=628&fit=crop'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
+#shard-2::before { background-image: radial-gradient(circle at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.75) 100%), url('https://upload.wikimedia.org/wikipedia/ru/a/a2/Batman_Jim_Lee.jpg'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
+#shard-3::before { background-image: radial-gradient(circle at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.75) 100%), url('https://i.redd.it/male-model-francisco-lachowski-on-top-of-being-handsome-asf-v0-rrxuw64ie29c1.jpg?width=471&format=pjpg&auto=webp&s=ad5940bc9724af5d963f08259aeda606dcc6cf2b'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
+#shard-4::before { background-image: radial-gradient(circle at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.75) 100%), url('https://bookingagentinfo.com/wp-content/uploads/2022/06/Jordan-Barrett-1.png'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
+#shard-5::before { background-image: radial-gradient(circle at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.75) 100%), url('https://f4.bcbits.com/img/0016828305_10.jpg'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
+#shard-6::before { background-image: radial-gradient(circle at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.75) 100%), url('https://www.atj.com/wp-content/uploads/2024/07/Destination-Highlights-Korea1-Highlights-Seoul.jpg'), radial-gradient(circle at 50% 50%, rgba(100, 120, 200, 0.6), transparent 70%); }
 
+/* --- Остальной код без изменений --- */
 #shard-1 { position: absolute; top: 200px; left: 410px; z-index: 100; clip-path: polygon(25.5% 23.6%, 30.7% 19.6%, 39.9% 13.9%, 43.1% 11.7%, 44.7% 8.7%, 55.3% 5.5%, 59.3% 4.8%, 61.7% 3.3%, 62.5% 3.3%, 64.1% 4.1%, 64.9% 4.1%, 73.9% 11.2%, 73.9% 12%, 73.1% 13.6%, 72.3% 16.8%, 71.5% 19.2%, 71.5% 21.6%, 72.3% 23.2%, 72.3% 24.8%, 73.1% 27.2%, 73.1% 28%, 72.3% 29.6%, 67.5% 31.2%, 65.1% 32.8%, 61.9% 32.8%, 57.1% 33.6%, 53.1% 33.6%, 50.1% 34.4%, 48.5% 34.4%, 45.1% 34.4%, 34.3% 29.2%, 29.5% 26.8%); }
 #shard-2 { top: 190px; left: 270px; clip-path: polygon(47.5% 60.7%, 49.1% 59.9%, 52.3% 56.1%, 53.9% 55.3%, 60.1% 53.8%, 60.1% 50.8%, 60.9% 46.8%, 61.7% 42.8%, 63.3% 39.7%, 64.9% 37.3%, 67.4% 32%, 64.9% 30.4%, 60.1% 30.4%, 53.9% 32%, 48.3% 33.5%, 45.9% 33.5%, 45.1% 36.6%, 44.4% 37.4%, 42.1% 40.6%, 39.8% 42.2%, 37.4% 44.5%, 34.2% 47.7%, 33.4% 47.7%, 34.2% 50.6%, 34.2% 53.8%, 36.6% 55.3%, 37.4% 58.5%, 39% 60.9%, 40.6% 64.9%); }
 #shard-3 { top: -400px; left: -473px; clip-path: polygon(95.6% 53.5%, 96.4% 53.5%, 96.4% 55.9%, 96.4% 59.8%, 96.4% 63.1%, 96.4% 65.6%, 94.9% 70.5%, 94.2% 75.4%, 93.4% 79.5%, 93.4% 81.8%, 92.6% 85.1%, 89.7% 92.4%, 89.7% 94%, 88.2% 94%, 85.2% 94.8%, 81.3% 96.4%, 73.3% 87.8%, 73.3% 81.4%, 73.3% 78.2%, 72.5% 77.4%, 73.3% 75%, 75.6% 74.2%, 78.6% 72.5%, 82.5% 68.4%, 84.1% 63.9%, 86.6% 61.4%); }
@@ -104,39 +122,7 @@ body, html {
 #shard-5.is-breathing { animation-name: breathe-5; animation-duration: 6.3s; animation-delay: -0.8s; }
 #shard-6.is-breathing { animation-name: breathe-6; animation-duration: 7.0s; animation-delay: -1.8s; }
 
-/* --- МЕРЦАЮЩИЕ ЧАСТИЦЫ ПО ВСЕМУ ЭКРАНУ --- */
-
-#flickering-particles-container {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 50;
-}
-
-.flickering-particle {
-    position: absolute;
-    border-radius: 50%;
-    background: #ffffff;
-    box-shadow: 
-        0 0 4px #fff,
-        0 0 8px #fff,
-        0 0 12px #aaccff;
-    /* УДАЛЕНО: свойство animation теперь задается в JS */
-}
-
-@keyframes flicker {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.2; transform: scale(0.7); }
-}
-
-/* ДОБАВЛЕНО: Новая анимация для дрейфа к центру */
-@keyframes centerPull {
-    0%, 100% {
-        /* Начальная и конечная точка - это исходное положение частицы */
-        transform: translate(0, 0);
-    }
-    50% {
-        /* В середине анимации частица смещается на вектор, рассчитанный в JS */
-        transform: translate(var(--target-x), var(--target-y));
-    }
-}
+#flickering-particles-container { position: absolute; inset: 0; pointer-events: none; z-index: 50; }
+.flickering-particle { position: absolute; border-radius: 50%; background: #ffffff; box-shadow: 0 0 4px #fff, 0 0 8px #fff, 0 0 12px #aaccff; }
+@keyframes flicker { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.2; transform: scale(0.7); } }
+@keyframes centerPull { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(var(--target-x), var(--target-y)); } }
